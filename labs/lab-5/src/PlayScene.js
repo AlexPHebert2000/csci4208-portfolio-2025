@@ -1,8 +1,6 @@
 class PlayScene extends Phaser.Scene {
   constructor() {
     super('play');
-    this.top_score = 100;
-    this.winner = 'Top Score'
   }
 
   preload(){
@@ -28,6 +26,7 @@ class PlayScene extends Phaser.Scene {
     this.create_collisions();
     this.create_hud();
     this.create_powerups();
+    this.input.keyboard.on('keydown-ESC', () => {this.scene.start('title')})
   }
   create_map() {
     this.background = this.add.tileSprite(config.width/2, config.height/2, config.width, config.height, 'background')
@@ -55,6 +54,7 @@ class PlayScene extends Phaser.Scene {
     this.score += 1;
   }
   create_collisions() {
+    this.physics.add.overlap(this.player, this.powerups, this.collect_powerup, null, this);
     this.physics.add.overlap(this.player, this.enemies, this.game_over, null, this);
     this.physics.add.overlap(this.player_projectiles, this.enemies, this.slay_enemy, null, this)
     this.physics.add.overlap(this.enemy_projectiles, this.player, this.game_over, null, this)
@@ -84,8 +84,9 @@ class PlayScene extends Phaser.Scene {
     this.score_text = this.add.text(32, 32, "");
     this.score_text.depth = 3;
     this.score_text.setColor('rgb(255,255,255)');
+    const {winner, top_score} = this.registry.values;
 
-    this.top_score_text = this.add.text(600, 32, "");
+    this.top_score_text = this.add.text(600, 32, `${winner}: ${top_score}`);
     this.top_score_text.depth = 3;
     this.top_score_text.setOrigin(1, 0);
   }
@@ -108,14 +109,19 @@ class PlayScene extends Phaser.Scene {
     this.time.addEvent(event, this);
   }
   spawn_powerup() {
-    //if (Phaser.Math.Between(0, 4) !== 0){return}
-    const PowerUpClass = PowerUp;
+    this.powerup_types = [ProjectilePowerUp, SlayPowerUp]
+    if (Phaser.Math.Between(0, 4) !== 0){return}
+    const PowerUpClass = Phaser.Utils.Array.GetRandom(this.powerup_types);
     const position = {
       x: config.width + 32,
       y: Phaser.Math.Between(50, 430)
     }
-    const powerup = new PowerUpClass(this, position.x, position.y, 'powerup-slay');
+    const powerup = new PowerUpClass(this, position.x, position.y);
     this.powerups.push(powerup);
+  }
+  collect_powerup(player, powerup) {
+    powerup.applyEffect(player);
+    powerup.destroy();
   }
 
   update(time){
@@ -136,15 +142,18 @@ class PlayScene extends Phaser.Scene {
   }
   update_score() {
     this.score_text.setText(`Score: ${this.score}`);
-    this.top_score_text.setText(`${this.winner}: ${this.top_score}`);
+    const {winner, top_score} = this.registry.values;
+    this.top_score_text.setText(`${winner}: ${top_score}`);
   }
 
   game_over(){
-    if (this.score > this.top_score) {
-      this.top_score = this.score;
+    const {top_score, winner} = this.registry.values();
+    if (this.score > top_score) {
       this.physics.pause();
-      this.winner = prompt('Winner! Enter your name: ') ?? "Top Score";
+      winner = prompt('Winner! Enter your name: ') ?? "Top Score";
       this.input.keyboard.keys = [];
+      this.registry.set('winner', winner || 'Top Score');
+      this.registry.set('top_score', score)
     }
     this.cameras.main.flash();
     this.scene.restart(); 

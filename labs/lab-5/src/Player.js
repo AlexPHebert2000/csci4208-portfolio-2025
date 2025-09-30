@@ -11,6 +11,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.anims.play('player-move', true)
     this.projectiles = scene.player_projectiles;
     this.last_fired = 0;
+    this.projectileScale = 1;
   }
   move(){
     this.body.velocity.x = 0;
@@ -34,6 +35,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       const position = {x: this.x, y: this.y};
       const velocity = {x: 300, y:0};
       const projectile = new Projectile(this.scene, position, velocity)
+      projectile.setScale(this.projectileScale);
+      projectile.body.setSize(projectile.displayWidth, projectile.displayHeight, true)
       this.projectiles.push(projectile);
       this.last_fired = time;
     }
