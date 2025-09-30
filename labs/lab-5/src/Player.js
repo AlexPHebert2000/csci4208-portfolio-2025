@@ -8,6 +8,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
     this.buttons = scene.input.keyboard.addKeys('up,down,left,right');
     this.body.setSize(this.width - 16, this.height - 16);
+    this.anims.play('player-move', true)
   }
   move(){
     this.body.velocity.x = 0;

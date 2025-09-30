@@ -5,13 +5,18 @@ class PlayScene extends Phaser.Scene {
 
   preload(){
     this.load.path = 'assets/';
+    this.load.image('player', 'player.png')
     this.load.image('background', 'background.png');
-    this.load.image('player', 'player.png');
+    this.load.image('player-0', 'player-0.png');
+    this.load.image('player-1', 'player-1.png');
     this.load.image('enemy', 'enemy.png');
+    this.load.image('enemy-0', 'enemy-0.png');
+    this.load.image('enemy-1', 'enemy-1.png');
   }
 
   create(){
     this.create_map();
+    this.create_animations();
     this.create_player();
     this.create_enemies();
     this.create_collisions();
@@ -42,6 +47,26 @@ class PlayScene extends Phaser.Scene {
   }
   create_collisions() {
     this.physics.add.overlap(this.player, this.enemies, this.game_over, null, this);
+  }
+  create_animations() {
+    if (!this.anims.exists('player-move')){
+      const anim_player_move = {
+        key: 'player-move',
+        frames: [{key: 'player-0'}, {key: 'player-1'}],
+        frameRate: 6,
+        repeat: -1,
+      };
+      this.anims.create(anim_player_move);
+    }
+    if (!this.anims.exists('enemy-move')){
+      const anim_enemy_move = {
+        key: 'enemy-move',
+        frames: [{key: 'enemy-0'}, {key: 'enemy-1'}],
+        frameRate: 6,
+        repeat: -1
+      };
+      this.anims.create(anim_enemy_move)
+    }
   }
 
   update(){
