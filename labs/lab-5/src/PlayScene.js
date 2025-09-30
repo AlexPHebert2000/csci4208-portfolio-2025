@@ -14,7 +14,7 @@ class PlayScene extends Phaser.Scene {
     this.load.image('enemy', 'enemy.png');
     this.load.image('enemy-0', 'enemy-0.png');
     this.load.image('enemy-1', 'enemy-1.png');
-    this.load.image('projectile', 'projectile.png')
+    this.load.image('projectile', 'projectile.png');
   }
 
   create(){
@@ -54,6 +54,7 @@ class PlayScene extends Phaser.Scene {
   create_collisions() {
     this.physics.add.overlap(this.player, this.enemies, this.game_over, null, this);
     this.physics.add.overlap(this.player_projectiles, this.enemies, this.slay_enemy, null, this)
+    this.physics.add.overlap(this.enemy_projectiles, this.player, this.game_over, null, this)
   }
   create_animations() {
     if (!this.anims.exists('player-move')){
@@ -87,6 +88,7 @@ class PlayScene extends Phaser.Scene {
   }
   create_projectiles() {
     this.player_projectiles = [];
+    this.enemy_projectiles = [];
   }
   slay_enemy(projectile, enemy){
     enemy.destroy();
@@ -95,12 +97,16 @@ class PlayScene extends Phaser.Scene {
 
   update(time){
     this.update_player(time);
+    this.update_enemies(time);
     this.update_background();
     this.update_score()
   }
   update_player(time) {
     this.player.move();
     this.player.attack(time);
+  }
+  update_enemies(time) {
+    this.enemies.forEach(e => e.attack(time))
   }
   update_background() {
     this.background.tilePositionX +=3;
