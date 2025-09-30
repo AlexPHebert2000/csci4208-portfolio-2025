@@ -33,7 +33,7 @@ class PlayScene extends Phaser.Scene {
   }
   spawn_enemy() {
     const position = {
-      x: Phaser.Math.Between(0, config.width),
+      x: 640 + 32,
       y: Phaser.Math.Between(0, config.height)
     };
     const monster = new Enemy(this, position);
