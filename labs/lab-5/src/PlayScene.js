@@ -15,6 +15,8 @@ class PlayScene extends Phaser.Scene {
     this.load.image('enemy-0', 'enemy-0.png');
     this.load.image('enemy-1', 'enemy-1.png');
     this.load.image('projectile', 'projectile.png');
+    this.load.image('powerup-projectile', 'powerup-1.png');
+    this.load.image('powerup-slay', 'powerup-2.png');
   }
 
   create(){
@@ -25,6 +27,7 @@ class PlayScene extends Phaser.Scene {
     this.create_enemies();
     this.create_collisions();
     this.create_hud();
+    this.create_powerups();
   }
   create_map() {
     this.background = this.add.tileSprite(config.width/2, config.height/2, config.width, config.height, 'background')
@@ -93,6 +96,26 @@ class PlayScene extends Phaser.Scene {
   slay_enemy(projectile, enemy){
     enemy.destroy();
     projectile.destroy();
+  }
+  create_powerups() {
+    this.powerups = [];
+    const event = {
+      delay: 3000,
+      callback: this.spawn_powerup,
+      callbackScope: this,
+      loop: true
+    }
+    this.time.addEvent(event, this);
+  }
+  spawn_powerup() {
+    //if (Phaser.Math.Between(0, 4) !== 0){return}
+    const PowerUpClass = PowerUp;
+    const position = {
+      x: config.width + 32,
+      y: Phaser.Math.Between(50, 430)
+    }
+    const powerup = new PowerUpClass(this, position.x, position.y, 'powerup-slay');
+    this.powerups.push(powerup);
   }
 
   update(time){
