@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Adventure Game - Intro</title>
+    <link rel="icon" href="assets/dragon-logo.png" />
+  </head>
+  <body>
+    <h1>Witch's Hut</h1>
+    <a id="door" href="#">
+      <img id="doorImage" onclick="openDoor()" src="assets/locked-door.gif" width="240"/>
+    </a>
+    <p id="textbox"></p>
+    <div>
+      <a id="exit" href="swamp.html">Exit</a>
+    </div>
+    <hr/>
+    <iframe id="inventory" src="inventory.html" width=125 height=100></iframe>
+
+    <script>
+      inventory.src += location.search;
+      exit.href += location.search;
+
+      const queryString = new URLSearchParams(location.search);
+      const key = +queryString.get('keys');
+
+      function openDoor() {
+        console.log(key);
+        if (doorImage.src.includes('Open-Door')) {
+          door.href =  'hut-inside.html?' +queryString;
+        }
+        else if (key > 0) {
+          doorImage.src = 'assets/Open-Door.gif';
+          textbox.innerHTML = "The door unlocks but the key broke apart.";
+          queryString.set('keys', key - 1);
+          inventory.src = 'inventory.html?' + queryString;
+          exit.href = 'swamp.html?' + queryString;
+        }
+        else {
+          textbox.innerHTML = "The door is locked.";
+        }
+      }
+    </script>
+  </body>
+</html>
