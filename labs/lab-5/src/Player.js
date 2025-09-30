@@ -6,9 +6,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setCollideWorldBounds(true);
-    this.buttons = scene.input.keyboard.addKeys('up,down,left,right');
+    this.buttons = scene.input.keyboard.addKeys('up,down,left,right,space');
     this.body.setSize(this.width - 16, this.height - 16);
     this.anims.play('player-move', true)
+    this.projectiles = scene.player_projectiles;
+    this.last_fired = 0;
   }
   move(){
     this.body.velocity.x = 0;
@@ -25,6 +27,18 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
     if (this.buttons.right.isDown){
       this.body.velocity.x = this.speed;
+    }
+  }
+  attack(time) {
+    if (this.buttons.space.isDown && time - this.last_fired > 400){
+      const position = {x: this.x, y: this.y};
+      const velocity = {x: 300, y:0};
+      const projectile = new Projectile(this.scene, position, velocity)
+      this.projectiles.push(projectile);
+      this.last_fired = time;
+    }
+    if (this.buttons.space.isUp) {
+      this.last_fired = 0;
     }
   }
 }

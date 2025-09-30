@@ -1,6 +1,8 @@
 class PlayScene extends Phaser.Scene {
   constructor() {
     super('play');
+    this.top_score = 100;
+    this.winner = 'Top Score'
   }
 
   preload(){
@@ -12,14 +14,17 @@ class PlayScene extends Phaser.Scene {
     this.load.image('enemy', 'enemy.png');
     this.load.image('enemy-0', 'enemy-0.png');
     this.load.image('enemy-1', 'enemy-1.png');
+    this.load.image('projectile', 'projectile.png')
   }
 
   create(){
     this.create_map();
     this.create_animations();
+    this.create_projectiles();
     this.create_player();
     this.create_enemies();
     this.create_collisions();
+    this.create_hud();
   }
   create_map() {
     this.background = this.add.tileSprite(config.width/2, config.height/2, config.width, config.height, 'background')
@@ -44,9 +49,11 @@ class PlayScene extends Phaser.Scene {
     };
     const monster = new Enemy(this, position);
     this.enemies.push(monster);
+    this.score += 1;
   }
   create_collisions() {
     this.physics.add.overlap(this.player, this.enemies, this.game_over, null, this);
+    this.physics.add.overlap(this.player_projectiles, this.enemies, this.slay_enemy, null, this)
   }
   create_animations() {
     if (!this.anims.exists('player-move')){
@@ -68,19 +75,48 @@ class PlayScene extends Phaser.Scene {
       this.anims.create(anim_enemy_move)
     }
   }
+  create_hud() {
+    this.score = 0;
+    this.score_text = this.add.text(32, 32, "");
+    this.score_text.depth = 3;
+    this.score_text.setColor('rgb(255,255,255)');
 
-  update(){
-    this.update_player();
-    this.update_background();
+    this.top_score_text = this.add.text(600, 32, "");
+    this.top_score_text.depth = 3;
+    this.top_score_text.setOrigin(1, 0);
   }
-  update_player() {
+  create_projectiles() {
+    this.player_projectiles = [];
+  }
+  slay_enemy(projectile, enemy){
+    enemy.destroy();
+    projectile.destroy();
+  }
+
+  update(time){
+    this.update_player(time);
+    this.update_background();
+    this.update_score()
+  }
+  update_player(time) {
     this.player.move();
+    this.player.attack(time);
   }
   update_background() {
-    this.background.tilePositionX +=3
+    this.background.tilePositionX +=3;
+  }
+  update_score() {
+    this.score_text.setText(`Score: ${this.score}`);
+    this.top_score_text.setText(`${this.winner}: ${this.top_score}`);
   }
 
   game_over(){
+    if (this.score > this.top_score) {
+      this.top_score = this.score;
+      this.physics.pause();
+      this.winner = prompt('Winner! Enter your name: ') ?? "Top Score";
+      this.input.keyboard.keys = [];
+    }
     this.cameras.main.flash();
     this.scene.restart(); 
   }
