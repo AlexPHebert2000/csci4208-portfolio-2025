@@ -17,7 +17,7 @@ class PlayScene extends Phaser.Scene {
     this.create_collisions();
   }
   create_map() {
-    this.add.image(config.width/2, config.height/2, 'background');
+    this.background = this.add.tileSprite(config.width/2, config.height/2, config.width, config.height, 'background')
   }
   create_player() {
     this.player = new Player(this);
@@ -46,9 +46,13 @@ class PlayScene extends Phaser.Scene {
 
   update(){
     this.update_player();
+    this.update_background();
   }
   update_player() {
     this.player.move();
+  }
+  update_background() {
+    this.background.tilePositionX +=3
   }
 
   game_over(){
