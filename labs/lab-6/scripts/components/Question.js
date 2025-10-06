@@ -1,3 +1,5 @@
+import Options from './Options.js';
+
 const Question = (triva) => (
   `
   <h3>
@@ -6,6 +8,7 @@ const Question = (triva) => (
   </h3>
   <h4>Question</h4>
   <p>${triva.question}</p>
+  ${Options(triva)}
   `
 );
 
