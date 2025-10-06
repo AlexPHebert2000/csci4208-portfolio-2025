@@ -1,9 +1,12 @@
 import Question from "./components/Question.js";
+import HUD from './components/HUD.js';
 
 const renderDOM = (html) => document.getElementById('view').innerHTML = html;
 
 export const PlayScene = (props) => {
-  const {trivia} = props;
-  console.log(trivia)
-  renderDOM(`${Question(trivia)}`);
+  const {timer, score, trivia} = props;
+  renderDOM(`
+    ${HUD(timer, score)}
+    ${Question(trivia)}
+    `);
 }
