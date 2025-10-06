@@ -32,4 +32,17 @@ window.start = async () => {
   createGame();
 }
 
+window.checkAnswer = (attempt) => {
+  const answer = state.trivia.correct_answer;
+  if (attempt == answer) {
+    state.score += state.timer;
+    state.timer += 10;
+    playGame();
+  }
+  else{
+    clearInterval(state.invervalId);
+    view.GameoverScene(state);
+  }
+}
+
 window.addEventListener('load', start);
