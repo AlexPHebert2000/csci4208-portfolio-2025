@@ -24,7 +24,7 @@ const MultiOptions = (trivia) => {
 
 const Options = (trivia) => {
   switch(trivia.type){
-    case "boolean": return BooleanOptions(trvia);
+    case "boolean": return BooleanOptions(trivia);
     case "multiple": return MultiOptions(trivia);
   }
 }

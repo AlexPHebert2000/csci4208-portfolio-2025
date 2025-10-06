@@ -22,7 +22,7 @@ const createGame = () => {
   playGame();
 }
 
-const playGame = async () => {
+window.playGame = async () => {
   const json = await http.sendGetRequest(GET_TRIVIA);
   [ state.trivia ] = json.results;
   view.PlayScene(state)
