@@ -1,0 +1,17 @@
+const ListItems = (topScores) => {
+  let li = ``;
+  const scores = topScores.sort((a,b) => b.score - a.score);
+  for (let row of scores){
+    li += `<li>${row.name}: ${row.score}</li>`
+  }
+  return li;
+}
+
+export default (topScores) => (`
+  <h2>Top Scores:</h2>
+  <section>
+    <ol>
+      ${ListItems(topScores)}
+    </ol>
+  </section>  
+`);
