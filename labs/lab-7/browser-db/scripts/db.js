@@ -1,5 +1,14 @@
+let _adapter = null;
+let _doc = null;
+
+export const useAdapter = (adapter) => {
+  _adapter = adapter;
+}
+
 export const boot = async () => {
-  throw new Error("boot() not implemented yet");
+  if (!_adapter) throw new Error("No adapter set. Call useAdapter() first");
+  _doc = await _adapter.load();
+  return _doc;
 }
 
 // Write
