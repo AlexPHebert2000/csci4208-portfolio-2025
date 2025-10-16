@@ -50,6 +50,14 @@ export const updateOne = async (col, id, patch) => {
 }
 
 // Delete
-export const deleteOne = (col, id) => {
-  throw new Error("deleteOne() not implemented yet");
+export const deleteOne =async(col, id) => {
+  const d = getDoc();
+  const before = d[col].length;
+  d[col] = d[col].filter(r => r.id !== id);
+  const deleted = before - d[col].length;
+  if (deleted) {
+  await _adapter.save(d);
+  _doc = d;
+  }
+  return deleted; // 0 or 1
 }
