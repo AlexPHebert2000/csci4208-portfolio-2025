@@ -11,14 +11,23 @@ export const boot = async () => {
   return _doc;
 }
 
+export const uid = () => {
+  return crypto.randomUUID().slice(0, 8);
+}
+
 // Write
-export const insertOne = (col, data) => {
-  throw new Error("insertOne() not implemented yet");
+export const insertOne = async (col, data) => {
+  const d = getDoc();
+  const rec = {id: uid(), ...data}
+  d[col].push(rec);
+  await _adapter.save(d);
+  _doc = d;
+  return rec;
 }
 
 // Read
 export const getDoc = () => {
-  throw new Error("getDoc() not implemented yet");
+  return structuredClone(_doc);
 }
 
 export const findMany = () => {
@@ -30,7 +39,7 @@ export const findOne = () => {
 }
 
 // Update
-export const updateOne = (col, id, patch) => {
+export const updateOne = async (col, id, patch) => {
   throw new Error("updateOne() not implemented yet");
 }
 
