@@ -35,12 +35,18 @@ export const findMany = (col, pred = () => true) => {
 }
 
 export const findOne = (col, pred) => {
-  return getDoc()[col].filter(pred) || null;
+  return getDoc()[col].filter(pred)[0] || null;
 }
 
 // Update
 export const updateOne = async (col, id, patch) => {
-  throw new Error("updateOne() not implemented yet");
+  const d = getDoc();
+  const i = d[col].findIndex(r => r.id === id);
+  if (i === -1) {return 0};
+  d[col][i] = { ...d[col][i], ...patch };
+  await _adapter.save(d);
+  _doc = d;
+  return 1;
 }
 
 // Delete
