@@ -30,12 +30,12 @@ export const getDoc = () => {
   return structuredClone(_doc);
 }
 
-export const findMany = () => {
-  throw new Error("findMany() not implemented yet");
+export const findMany = (col, pred = () => true) => {
+  return getDoc()[col].filter(pred);
 }
 
-export const findOne = () => {
-  throw new Error("findOne() not implemented yet");
+export const findOne = (col, pred) => {
+  return getDoc()[col].filter(pred) || null;
 }
 
 // Update
